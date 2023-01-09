@@ -128,6 +128,17 @@ func PropertiesFromMediaSource[T, U any](src MediaSource[T]) []prop.Media {
 	return nil
 }
 
+// InfoFromMediaSource attempts to return driver info from the given MediaSource
+// if it has an underlying, online driver.
+func InfoFromMediaSource[T, U any](src MediaSource[T]) driver.Info {
+	if asMedia, ok := src.(*mediaSource[T, U]); ok {
+		if asMedia.driver != nil {
+			return asMedia.driver.Info()
+		}
+	}
+	return driver.Info{}
+}
+
 // newMediaSource instantiates a new media read closer and possibly references the given driver.
 func newMediaSource[T, U any](d driver.Driver, r MediaReader[T], p U) MediaSource[T] {
 	if d != nil {
